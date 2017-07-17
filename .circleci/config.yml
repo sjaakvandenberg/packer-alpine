@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: hashicorp/packer
+      - image: blacklabelops/virtualbox
     working_directory: ~/alpine
     steps:
       - checkout
