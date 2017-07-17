@@ -7,4 +7,4 @@ jobs:
     steps:
       - checkout
       - run: uname -a
-      - run: packer --help
+      - run: packer build template.json
