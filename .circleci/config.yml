@@ -7,4 +7,4 @@ jobs:
     steps:
       - checkout
       - run:
-        command: uname -a
+        command: "uname -a"
