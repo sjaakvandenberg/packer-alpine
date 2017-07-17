@@ -1,0 +1,16 @@
+---
+
+- name: "create cache directory in tmpfs"
+  file:
+    path: /dev/shm/microcache
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: 0700
+
+- name: "template configuration files"
+  template: src={{ item.src }} dest={{ item.dest }}
+  with_items:
+  - { src: "configuration/nginx/nginx.conf.j2",    dest: "/etc/nginx/nginx.conf" }
+  - { src: "configuration/nginx/default.conf.j2",  dest: "/etc/nginx/default.d/default.conf" }
+  notify: start nginx

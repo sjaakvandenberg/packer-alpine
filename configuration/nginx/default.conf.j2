@@ -1,0 +1,72 @@
+server {
+
+  listen                      80 default_server;
+  listen                      [::]:80 default_server ipv6only=on;
+
+  root                        {{ wordpress_directory }};
+  index                       index.php index.html index.htm;
+  server_name                 {{ server }};
+
+  location / {
+    try_files                 $uri $uri/ /index.php?$args;
+  }
+
+  location ~ \.php$ {
+
+    set $no_cache             "";
+
+    if ($request_method !~ ^(GET|HEAD)$) {
+      set $no_cache           "1";
+    }
+
+    if ($no_cache = "1") {
+      add_header              Set-Cookie "_mcnc=1; Max-Age=2; Path=/";
+      add_header              X-Microcachable "0";
+    }
+
+    if ($http_cookie ~* "_mcnc") {
+      set $no_cache           "1";
+    }
+
+    fastcgi_no_cache          $no_cache;
+    fastcgi_cache_bypass      $no_cache;
+
+    fastcgi_split_path_info   ^(.+\.php)(/.+)$;
+    fastcgi_cache             microcache;
+    fastcgi_cache_key         $scheme$host$request_uri$request_method;
+    fastcgi_cache_valid       200 301 302 10m;
+    fastcgi_cache_use_stale   updating error timeout invalid_header http_500;
+    fastcgi_pass_header       Set-Cookie;
+    fastcgi_pass_header       Cookie;
+    fastcgi_ignore_headers    Cache-Control Expires Set-Cookie;
+
+    try_files                 $uri =404;
+    include                   fastcgi_params;
+
+{% if ansible_distribution == "Debian" %}
+    fastcgi_pass              unix:/var/run/php/php7.0-fpm.sock;
+{% elif ansible_distribution == "CentOS" %}
+    fastcgi_pass              unix:/run/php-fpm/www.sock;
+{% endif %}
+    fastcgi_index             index.php;
+    fastcgi_param             SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_param             PATH_INFO $fastcgi_script_name;
+    fastcgi_intercept_errors  on;
+
+    fastcgi_buffer_size           128k;
+    fastcgi_buffers               256 16k;
+    fastcgi_busy_buffers_size     256k;
+    fastcgi_temp_file_write_size  256k;
+    fastcgi_read_timeout          240;
+
+  }
+
+  location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+    expires                   max;
+    access_log                off;
+    log_not_found             off;
+  }
+
+  include                     /etc/nginx/conf.d/*.conf;
+
+}

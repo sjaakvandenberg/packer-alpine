@@ -1,0 +1,4 @@
+[local]
+127.0.0.1 ansible_user=vagrant ansible_private_key_file="./.vagrant/machines/alpine/virtualbox/private_key"
+
+[web]

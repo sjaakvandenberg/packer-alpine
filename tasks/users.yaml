@@ -1,0 +1,23 @@
+---
+
+- name: add groups
+  group: name={{ item }} state=present
+  with_items:
+  - www-data
+  - deploy
+
+- name: give sudo to deploy group
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^%deploy"
+    line: "%deploy ALL=(ALL) NOPASSWD: ALL"
+
+- name: add users
+  user: name={{ item.user }} group={{ item.group }} shell=/bin/bash state=present
+  with_items:
+  - { user: "www-data", group: "www-data" }
+  - { user: "deploy",   group: "deploy" }
+
+# - name: add deploy to www-data group
+#   user: name=deploy groups=www-data

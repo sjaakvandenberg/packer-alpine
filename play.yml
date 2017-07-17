@@ -1,0 +1,34 @@
+---
+- hosts: all
+  become: yes
+  vars:
+    public: "{{ ansible_default_ipv4.address }}"
+    server: 10.0.0.10
+    mysql_database: wzgy31
+    mysql_username: zxxz1j
+    mysql_password: NGRjTgyYWQ5N
+    mysql_root_password: DETk5NmJkMTE
+    mysql_backup_directory: /backup
+    wordpress_directory: /var/www/wordpress
+    wordpress_title: "My blog"
+    wordpress_username: g1jx2w
+    wordpress_password: YzMxDg
+    wordpress_email: mail@svdb.co
+    redis_password: WMxTUGYwDA5G
+
+  tasks:
+  - include: tasks/users.yml
+  # - include: tasks/ssh.yml
+  - include: tasks/packages.yml
+  # - include: tasks/mysql.yml
+  # - include: tasks/php-fpm.yml
+  - include: tasks/nginx.yml
+  # - include: tasks/wordpress.yml
+  # - include: tasks/redis.yml
+  # - include: tasks/ownership.yml
+  # - include: tasks/firewall.yml
+  # - include: tasks/cron.yml
+  # - include: tasks/restart.yml
+
+  # handlers:
+  # - include: tasks/handlers.yml

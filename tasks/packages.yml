@@ -1,0 +1,37 @@
+---
+
+- name: add packages from v3.4/main
+  shell: >
+    apk --repository http://dl-cdn.alpinelinux.org/alpine/v3.4/main
+    add --no-cache
+    nginx curl mariadb mariadb-client tzdata ncurses
+    libjpeg-turbo libjpeg-turbo-utils libwebp icu-libs
+
+- name: add packages from edge/testing
+  shell: >
+    apk --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing
+    add --no-cache
+    pngquant
+
+- name: add packages from edge/community
+  shell: >
+    apk --repository http://dl-cdn.alpinelinux.org/alpine/edge/community
+    add --no-cache
+    php7 php7-dom php7-ctype php7-curl php7-fpm php7-gd php7-intl php7-json
+    php7-mbstring php7-mysqlnd php7-opcache php7-pdo php7-pdo_mysql
+    php7-phar php7-posix php7-session php7-xml php7-zlib
+
+- name: start nginx
+  service: name=nginx state=restarted enabled=yes
+
+- name: start mariadb
+  service: name=mariadb state=stopped enabled=yes
+
+- name: start php-fpm7
+  service: name=php-fpm7 state=restarted enabled=yes
+
+- name: mysql setup
+  shell: /etc/init.d/mariadb setup
+
+- name: start mariadb
+  service: name=mariadb state=restarted enabled=yes

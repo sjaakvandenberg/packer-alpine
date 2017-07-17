@@ -1,0 +1,62 @@
+{
+  "builders": [
+    {
+      "boot_command": [
+        "root<enter><wait>",
+        "ifconfig eth0 up && udhcpc -q -n -i eth0<enter><wait>",
+        "wget -O - http://{{ .HTTPIP }}:{{ .HTTPPort }}/init.sh | /bin/sh<enter>"
+      ],
+      "boot_wait": "30s",
+      "communicator": "ssh",
+      "disk_size": 8196,
+      "guest_additions_mode": "disable",
+      "guest_os_type": "Linux26_64",
+      "hard_drive_interface": "sata",
+      "headless": false,
+      "http_directory": "http",
+      "iso_urls": [
+        "iso/alpine-virt-3.4.6-x86_64.iso",
+        "https://fr.alpinelinux.org/alpine/v3.4/releases/x86_64/alpine-virt-3.4.6-x86_64.iso"
+      ],
+      "iso_checksum": "1e56ac8eae8d5766ac4a6d0e9c76c8c05828e782c6fc860cf722a2aad3a018f0",
+      "iso_checksum_type": "sha256",
+      "shutdown_command": "sudo /sbin/poweroff",
+      "ssh_password": "vagrant",
+      "ssh_username": "vagrant",
+      "ssh_wait_timeout": "60m",
+      "type": "virtualbox-iso",
+      "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--memory", "512"],
+        ["modifyvm", "{{.Name}}", "--cpus", "1"]
+      ],
+      "virtualbox_version_file": ".vbox_version"
+    }
+  ],
+  "description": "Alpine Linux 3.4 x86_64 With Docker",
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/00-base.sh",
+        "scripts/10-packages.sh",
+        "scripts/20-services.sh",
+        "scripts/30-sshd.sh",
+        "scripts/99-cleanup.sh"
+      ],
+      "override": {
+        "virtualbox-iso": {
+          "execute_command": "sudo -S /bin/sh '{{ .Path }}'"
+        }
+      }
+    }
+  ],
+  "post-processors": [
+    [
+      {
+        "keep_input_artifact": false,
+        "output": "vbox/alpine-v.3.4.6.box",
+        "type": "vagrant"
+      }
+    ]
+  ]
+}
