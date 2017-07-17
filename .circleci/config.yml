@@ -7,5 +7,5 @@ jobs:
     steps:
       - checkout
       - run: uname -a
-      - run: /sbin/rcvboxdrv setup
+      - run: which rcvboxdrv
       - run: packer build template.json
