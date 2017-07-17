@@ -2,8 +2,9 @@ version: 2
 jobs:
   build:
     docker:
-      - image: ubuntu:16.10
+      - image: hashicorp/packer
     working_directory: ~/alpine
     steps:
       - checkout
       - run: uname -a
+      - run: packer --help
