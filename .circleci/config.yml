@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: blacklabelops/virtualbox
+      - image: mpfmedical/buildbox-packer
     working_directory: ~/alpine
     steps:
       - checkout
