@@ -6,5 +6,4 @@ jobs:
     working_directory: ~/alpine
     steps:
       - checkout
-      - run:
-        command: "uname -a"
+      - run: uname -a
